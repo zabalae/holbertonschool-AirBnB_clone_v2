@@ -15,7 +15,7 @@ if __name__ == "__main__":
     @app.route('/')
     def index():
         return "Hello HBNB!"
-    
+
 
     @app.route('/hbnb')
     def index2():

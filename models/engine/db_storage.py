@@ -38,29 +38,22 @@ class DBStorage:
     def all(self, cls=None):
         """ Query objects from the database """
         dict_objs = {}
+        cls = classes[cls]
         if cls:
-            db_list = self.__session.query(cls).all()
-            for target in db_list:
-                key = target.__class__.__name__ + '.' + target.id
-                dict_objs[key] = target
+            objects = self.__session.query(cls).all()
         else:
-            for inst in classes.values():
-                db_list = self.__session.query(inst).all()
-                for target in db_list:
-                    key = target.__class__.__name__ + '.' + target.id
-                    dict_objs[key] = target
+            objects = self.session.query(
+                State, City, User, Amenity, Place, Review)
+        for obj in objects:
+            key = obj.__class__.__name__ + '.' + obj.id
+            value = obj
+            dict_objs[key] = value
         return dict_objs
 
     def new(self, obj):
         """ Add a new object to the current session """
-        if obj:
-            try:
-                self.__session.add(obj)
-                self.__session.flush()
-                self.__session.refresh(obj)
-            except Exception as erno:
-                self.__session.rollback()
-                raise erno
+        self.__session.add(obj)
+        self.__session.flush()
 
     def save(self):
         """ Commit the current session to save changes """
@@ -70,7 +63,6 @@ class DBStorage:
         """ Deletes an object from the database """
         if obj:
             self.__session.delete(obj)
-            self.save()
 
     def reload(self):
         """ Set up the database tables and session for the current engine """

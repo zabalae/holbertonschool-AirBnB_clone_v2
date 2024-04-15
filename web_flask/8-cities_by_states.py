@@ -23,8 +23,8 @@ def state_list():
 @app.route('/cities_by_states')
 def city_list():
     """Injects the cities into html"""
-    states = storage.all('State')
-    return render_template('8-cities_by_states.html', state=states)
+    cities = storage.all('City')
+    return render_template('8-cities_by_states.html', city=cities)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -38,16 +38,17 @@ class DBStorage:
     def all(self, cls=None):
         """ Query objects from the database """
         dict_objs = {}
-        cls = classes[cls]
         if cls:
             objects = self.__session.query(cls).all()
+            for target in objects:
+                key = target.__class__.name__ + '.' + target.id
+                dict_objs[key] = target
         else:
-            objects = self.session.query(
-                State, City, User, Amenity, Place, Review)
-        for obj in objects:
-            key = obj.__class__.__name__ + '.' + obj.id
-            value = obj
-            dict_objs[key] = value
+            for inst in classes.values():
+                objects = self.__session.query(inst).all()
+                for target in objects:
+                    key = target.__class__.name__ + '.' + target.id
+                    dict_objs[key] = target
         return dict_objs
 
     def new(self, obj):

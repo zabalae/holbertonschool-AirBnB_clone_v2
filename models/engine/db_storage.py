@@ -52,8 +52,14 @@ class DBStorage:
 
     def new(self, obj):
         """ Add a new object to the current session """
-        self.__session.add(obj)
-        self.__session.flush()
+        if obj:
+            try:
+                self.__session.add(obj)
+                self.__session.flush()
+                self.__session.refresh(obj)
+            except Exception as erno:
+                self.__session.rollback()
+                raise erno
 
     def save(self):
         """ Commit the current session to save changes """
@@ -63,6 +69,7 @@ class DBStorage:
         """ Deletes an object from the database """
         if obj:
             self.__session.delete(obj)
+            self.save()
 
     def reload(self):
         """ Set up the database tables and session for the current engine """
